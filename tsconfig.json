@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",               // (o "NodeNext" si usas ESM)
+    "moduleResolution": "node",
+    "esModuleInterop": true,            // permite import default de cors/helmet/pino-http
+    "strict": true,
+    "skipLibCheck": true,               // evita ruido por tipos de terceros
+    "types": ["node"],
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"]
+}
