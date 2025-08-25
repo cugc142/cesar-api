@@ -1,20 +1,12 @@
-import * as dotenv from 'dotenv';
+// src/config/env.ts
+import dotenv from "dotenv";
 dotenv.config();
 
 export const config = {
-  env: process.env.NODE_ENV || 'development',
-  port: Number(process.env.PORT || 3000),
-  logLevel: process.env.LOG_LEVEL || 'info',
-  jwtSecret: process.env.JWT_SECRET || 'supersecretchangeit',
-  db: {
-    user: process.env.DB_USER || 'sa',
-    password: process.env.DB_PASSWORD || 'YourStrong!Passw0rd',
-    database: process.env.DB_NAME || 'ExpedientesDB',
-    server: process.env.DB_HOST || 'localhost',
-    port: Number(process.env.DB_PORT || 1433),
-    options: {
-      encrypt: String(process.env.DB_ENCRYPT || 'true') === 'true',
-      trustServerCertificate: String(process.env.DB_TRUST_CERT || 'true') === 'true'
-    }
-  }
+  port: process.env.PORT || 4000,
+  dbHost: process.env.PG_HOST || "localhost",
+  dbPort: process.env.PG_PORT || "5432",
+  dbUser: process.env.PG_USER || "postgres",
+  dbPassword: process.env.PG_PASSWORD || "postgres",
+  dbName: process.env.PG_DB || "expedientesdb",
 };

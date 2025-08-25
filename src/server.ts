@@ -1,8 +1,13 @@
-import app from './app';
-import { config } from './config/env';
-import './db/db'; // inicializa pool
+import express from "express";
+import expedienteRouter from "@routes/expediente.routes";
 
-app.listen(config.port, () => {
-  console.log(`🚀 API corriendo en http://localhost:${config.port}`);
-  console.log(`📘 Swagger en   http://localhost:${config.port}/docs`);
+const app = express();
+
+app.use(express.json());
+
+// Rutas
+app.use("/expedientes", expedienteRouter);
+
+app.listen(3000, () => {
+  console.log("Servidor corriendo en http://localhost:3000");
 });

@@ -1,39 +1,35 @@
-import sql from "mssql";
-// ...
-export { sql }; // ✅ ahora puedes importarlo
+// src/db/db.ts
+import { Pool, PoolClient } from "pg";
 import dotenv from "dotenv";
-
 dotenv.config();
 
-const dbConfig: sql.config = {
-  user: process.env.DB_USER,
-  password: process.env.DB_PASSWORD,
-  server: process.env.DB_SERVER || "localhost",
-  port: Number(process.env.DB_PORT) || 1433,
-  database: process.env.DB_DATABASE,
-  options: {
-    encrypt: process.env.DB_ENCRYPT === "true",
-    trustServerCertificate: process.env.DB_TRUST_CERT === "true",
-  },
-};
+export const pool = new Pool({
+  host: process.env.PG_HOST ?? "localhost",
+  port: Number(process.env.PG_PORT ?? 5432),
+  user: process.env.PG_USER ?? "postgres",
+  password: process.env.PG_PASSWORD ?? "postgres",
+  database: process.env.PG_DB ?? "expedientesdb",
+  max: 10,
+  idleTimeoutMillis: 30000,
+  connectionTimeoutMillis: 10000,
+});
 
-let pool: sql.ConnectionPool | null = null;
-
-export async function getPool(): Promise<sql.ConnectionPool> {
-  if (!pool) {
-    pool = await sql.connect(dbConfig);
-  }
-  return pool;
+export async function testPg() {
+  const { rows } = await pool.query("SELECT NOW() AS now");
+  console.log("✅ PostgreSQL conectado:", rows[0].now);
 }
 
-export async function execProc<T = any>(
-  procName: string,
-  params: Record<string, any> = {}
-): Promise<sql.IProcedureResult<T>> {
-  const p = await getPool();
-  let request = p.request();
-  for (const key of Object.keys(params)) {
-    request.input(key, params[key]);
+export async function withTx<T>(fn: (c: PoolClient) => Promise<T>): Promise<T> {
+  const client = await pool.connect();
+  try {
+    await client.query("BEGIN");
+    const out = await fn(client);
+    await client.query("COMMIT");
+    return out;
+  } catch (e) {
+    await client.query("ROLLBACK");
+    throw e;
+  } finally {
+    client.release();
   }
-  return request.execute<T>(procName);
 }

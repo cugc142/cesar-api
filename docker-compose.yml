@@ -1,15 +1,18 @@
+version: "3.9"
+
 services:
-  mssql:
-    image: mcr.microsoft.com/mssql/server:2022-latest
-    container_name: Expedientes_mssql2022
-    environment:
-      - ACCEPT_EULA=Y
-      - MSSQL_SA_PASSWORD=${DB_PASSWORD:-YourStrong!Passw0rd}
+  postgres:
+    image: postgres:15
+    container_name: expedientes_postgres
+    restart: always
     ports:
-      - "1433:1433"
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: expedientesdb
     volumes:
-      - mssql-data:/var/opt/mssql
-    restart: unless-stopped
+      - postgres_data:/var/lib/postgresql/data
 
 volumes:
-  mssql-data:
+  postgres_data:

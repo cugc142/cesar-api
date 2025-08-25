@@ -1,14 +1,22 @@
 {
   "compilerOptions": {
     "target": "ES2020",
-    "module": "CommonJS",               // (o "NodeNext" si usas ESM)
+    "module": "CommonJS",
     "moduleResolution": "node",
-    "esModuleInterop": true,            // permite import default de cors/helmet/pino-http
+    "esModuleInterop": true,
     "strict": true,
-    "skipLibCheck": true,               // evita ruido por tipos de terceros
+    "skipLibCheck": true,
     "types": ["node"],
     "outDir": "dist",
-    "rootDir": "src"
+    "rootDir": "src",
+    "baseUrl": "src",
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@db/*": ["db/*"],
+      "@core/*": ["core/*"],
+      "@controllers/*": ["controllers/*"],
+      "@routes/*": ["routes/*"]
+    }
   },
   "include": ["src"]
 }

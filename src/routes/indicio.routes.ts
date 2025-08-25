@@ -1,11 +1,38 @@
-import { Router } from 'express';
-import { requireAuth } from '../auth/auth.middleware';
-import { requireRole } from '../auth/role.middleware';
-import { listarPorExpediente, crear, actualizar, activar } from '../controllers/indicio.controller';
+import { Router } from "express";
+import {
+  listarIndiciosPorExpediente,
+  crearIndicio,
+  actualizarIndicio,
+  eliminarIndicio
+} from "@controllers/indicio.controller";
 
-const r = Router();
-r.get('/expedientes/:id/indicios', requireAuth, listarPorExpediente);
-r.post('/expedientes/:id/indicios', requireAuth, requireRole('tecnico','coordinador'), crear);
-r.put('/:id', requireAuth, requireRole('tecnico','coordinador'), actualizar);
-r.patch('/:id/activo', requireAuth, activar);
-export default r;
+const router = Router();
+
+/**
+ * @openapi
+ * /indicios/expediente/{codigo}:
+ *   get:
+ *     summary: Listar indicios de un expediente
+ */
+router.get("/expediente/:codigo", listarIndiciosPorExpediente);
+
+/**
+ * @openapi
+ * /indicios:
+ *   post:
+ *     summary: Crear un nuevo indicio
+ */
+router.post("/", crearIndicio);
+
+/**
+ * @openapi
+ * /indicios/{id}:
+ *   put:
+ *     summary: Actualizar un indicio
+ *   delete:
+ *     summary: Eliminar un indicio
+ */
+router.put("/:id", actualizarIndicio);
+router.delete("/:id", eliminarIndicio);
+
+export default router;
